@@ -222,13 +222,13 @@ class Student:
         save_btn = Button(btn_frame, text="Save",command=self.add_data, width=17, font=("times new roman", 13, "bold"), bg="blue",fg="white")
         save_btn.grid(row=0, column=0)
 
-        update_btn = Button(btn_frame, text="Update", width=17, font=("times new roman", 13, "bold"), bg="blue",fg="white")
+        update_btn = Button(btn_frame, text="Update", width=17, font=("times new roman", 13, "bold"), bg="blue",fg="white",command=self.update_data)
         update_btn.grid(row=0, column=1)
 
-        delete_btn = Button(btn_frame, text="Delete", width=17, font=("times new roman", 13, "bold"), bg="blue",fg="white")
+        delete_btn = Button(btn_frame, text="Delete", width=17, font=("times new roman", 13, "bold"), bg="blue",fg="white",command=self.delete_data)
         delete_btn.grid(row=0, column=2)
 
-        reset_btn = Button(btn_frame, text="Reset", width=17, font=("times new roman", 13, "bold"), bg="blue",fg="white")
+        reset_btn = Button(btn_frame, text="Reset", width=17, font=("times new roman", 13, "bold"), bg="blue",fg="white",command=self.reset_data)
         reset_btn.grid(row=0, column=3)
 
         btn_frame1 = Frame(class_Student_frame, bd=2, relief=RIDGE, bg="white")
@@ -282,12 +282,12 @@ class Student:
          #========table frame=========
 
         table_frame=Frame(Right_frame, bd=2,bg="white", relief=RIDGE)
-        table_frame.place(x=5,y=210,width=710,height=350)
+        table_frame.place(x=5,y=210,width=710,height=270)
 
         scroll_x=ttk.Scrollbar(table_frame,orient=HORIZONTAL)
         scroll_y=ttk.Scrollbar(table_frame,orient=VERTICAL)
 
-        self.student_table = ttk.Treeview(table_frame, column=("dep", "course", "year", "sem", "id", "name", "div", "roll", "gender", "dob", "email", "gender", "phone", "address", "teacher", "photo"), xscrollcommand=scroll_x.set, yscrollcommand=scroll_y.set)
+        self.student_table = ttk.Treeview(table_frame, column=("dep", "course", "year", "sem", "id", "name","div", "roll", "gender", "dob", "email", "phone", "address", "teacher", "photo"), xscrollcommand=scroll_x.set, yscrollcommand=scroll_y.set)
 
         scroll_x.pack(side=BOTTOM, fill=X)
         scroll_y.pack(side=RIGHT, fill=Y)
@@ -301,7 +301,10 @@ class Student:
         self.student_table.heading("sem", text="Semester")
         self.student_table.heading("id", text="StudentId")
         self.student_table.heading("name", text="Name")
+        self.student_table.heading("roll", text="Roll No.")
+        self.student_table.heading("gender", text="Gender")
         self.student_table.heading("div", text="Division")
+
         self.student_table.heading("dob", text="DOB")
         self.student_table.heading("email", text="Email")
         self.student_table.heading("phone", text="Phone")
@@ -317,7 +320,7 @@ class Student:
         self.student_table.column("id", width=100)
         self.student_table.column("name", width=100)
         self.student_table.column("roll", width=100)  
-        self.student_table.column("gender", width=100)
+        self.student_table.column("gender", width=70)
         self.student_table.column("div", width=100)
         self.student_table.column("dob", width=100)
         self.student_table.column("email", width=100)
@@ -406,39 +409,83 @@ class Student:
       else:
         print("Data does not have enough elements")  
     
-    # update
+     # update
     def update_data(self):
       if self.var_dep.get() == "select Department" or self.var_std_name.get() == "" or self.var_std_id.get() == "":
-        messagebox.showerror("Error", "All fields are required",parent=self.root)
+          messagebox.showerror("Error", "All fields are required", parent=self.root)
+      else:
+          try:
+              update = messagebox.askyesno("update", "Do you want to update this student details", parent=self.root)
+              if update:
+                  conn = mysql.connector.connect(host="localhost", username="root", password="12345678", database="face_recognizer")
+                  my_cursor = conn.cursor()
+                  my_cursor.execute("UPDATE student SET Dep=%s, course=%s, Year=%s, Semester=%s, Division=%s, Roll=%s, Gender=%s, Dob=%s, Email=%s, Phone=%s, Address=%s, Teacher=%s, PhotoSample=%s WHERE Student_id=%s", (
+                      self.var_dep.get(),
+                      self.var_course.get(),
+                      self.var_year.get(),
+                      self.var_semester.get(),
+                      self.var_div.get(),
+                      self.var_roll.get(),
+                      self.var_gender.get(),
+                      self.var_dob.get(),
+                      self.var_email.get(),
+                      self.var_phone.get(),
+                      self.var_address.get(),
+                      self.var_teacher.get(),
+                      self.var_radio1.get(),  # Assuming var_radio1 corresponds to PhotoSample
+                      self.var_std_id.get()
+                  ))
+                  conn.commit()
+                  messagebox.showinfo("Success", "Student details successfully updated", parent=self.root)
+                  self.fetch_data()
+                  conn.close()
+              else:
+                  return
+          except Exception as es:
+              messagebox.showerror("Error", f"Due To: {str(es)}", parent=self.root)
+    # delete fuction
+
+    def delete_data(self):
+      if self.var_std_id.get()=="":
+        messagebox.showerror("Error","Student id must be required",parent=self.root)
       else:
         try:
-          upadate=messagebox.askyesno("update","do you want to update this student detailes",parent=self.root)
-          if upadate>0:
-            conn=mysql.connector.connect(host="localhost",username="root",password="12345678",database="face_recognizer")
+          delete=messagebox.askyesno("student delete page","do you want to delete this student ",)
+          if delete>0:
+            conn = mysql.connector.connect(host="localhost", username="root", password="12345678", database="face_recognizer")
             my_cursor=conn.cursor()
-            my_cursor.execute("update student set Dep=%s,course=%s,Year=%s,Semester=%s,Division=%s,Roll=%s,Gender=%s,Dob=%s,Email=%s,Phone=%s,Address=%s,Teacher=%s,PhotoSample=%s where Student_id=%s",(
-                                                                                                                                                                             self.var_dep.get(),
-                                                                        self.var_course.get(),
-                                                                        self.var_year.get(),
-                                                                        self.var_semester.get(),
-                                                                        self.var_std_id.get(),
-                                                                        self.var_std_name.get(),
-                                                                        self.var_div.get(),
-                                                                        self.var_roll.get(),
-                                                                        self.var_gender.get(),
-                                                                        self.var_dob.get(),
-                                                                        self.var_email.get(),
-                                                                        self.var_phone.get(),
-                                                                        self.var_address.get(),
-                                                                        self.var_teacher.get(),
-                                                                        self.var_radio1.get(),
-                                                                        self.var_std_id.get()
-                                                                      ))
+            sql="delete from student where Student_id=%s "
+            val=(self.var_std_id.get(),)
+            my_cursor.execute(sql,val)
           else:
-            if not upadate:
-              return
-          messagebox.showinfo("Success","Student details successfully updated",
-          )                                                        
+            if not delete:
+              return  
+          conn.commit()
+          self.fetch_data()
+          conn.close()
+          messagebox.showinfo("Delete","Successfully deleted student detials",parent=self.root) 
+        except Exception as es:
+          messagebox.showerror("Error", f"Due To: {str(es)}", parent=self.root) 
+    #reset
+    def reset_data(self):
+      self.var_dep.set("Select Department")
+      self.var_course.set("Select Course")
+      self.var_year.set("Select Year")
+      self.var_semester.set("Select Semester")
+      self.var_std_id.set("")
+      self.var_std_name.set("")
+      self.var_div.set("Select Division")
+      self.var_roll.set("")
+      self.var_gender.set("Male")
+      self.var_dob.set("")
+      self.var_email.set("")
+      self.var_phone.set("")
+      self.var_address.set("")
+      self.var_teacher.set("")
+      self.var_radio1.set("")
+
+                        
+
                                                                         
 
 
@@ -457,4 +504,4 @@ if __name__ == "__main__":
     root = Tk()
     obj = Student(root)
     root.mainloop()  
-    hello how are you       
+          
