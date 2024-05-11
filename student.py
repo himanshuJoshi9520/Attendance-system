@@ -405,6 +405,42 @@ class Student:
         self.var_radio1.set(data[14])
       else:
         print("Data does not have enough elements")  
+    
+    # update
+    def update_data(self):
+      if self.var_dep.get() == "select Department" or self.var_std_name.get() == "" or self.var_std_id.get() == "":
+        messagebox.showerror("Error", "All fields are required",parent=self.root)
+      else:
+        try:
+          upadate=messagebox.askyesno("update","do you want to update this student detailes",parent=self.root)
+          if upadate>0:
+            conn=mysql.connector.connect(host="localhost",username="root",password="12345678",database="face_recognizer")
+            my_cursor=conn.cursor()
+            my_cursor.execute("update student set Dep=%s,course=%s,Year=%s,Semester=%s,Division=%s,Roll=%s,Gender=%s,Dob=%s,Email=%s,Phone=%s,Address=%s,Teacher=%s,PhotoSample=%s where Student_id=%s",(
+                                                                                                                                                                             self.var_dep.get(),
+                                                                        self.var_course.get(),
+                                                                        self.var_year.get(),
+                                                                        self.var_semester.get(),
+                                                                        self.var_std_id.get(),
+                                                                        self.var_std_name.get(),
+                                                                        self.var_div.get(),
+                                                                        self.var_roll.get(),
+                                                                        self.var_gender.get(),
+                                                                        self.var_dob.get(),
+                                                                        self.var_email.get(),
+                                                                        self.var_phone.get(),
+                                                                        self.var_address.get(),
+                                                                        self.var_teacher.get(),
+                                                                        self.var_radio1.get(),
+                                                                        self.var_std_id.get()
+                                                                      ))
+          else:
+            if not upadate:
+              return
+          messagebox.showinfo("Success","Student details successfully updated",
+          )                                                        
+                                                                        
+
 
 
 
@@ -420,4 +456,5 @@ class Student:
 if __name__ == "__main__":
     root = Tk()
     obj = Student(root)
-    root.mainloop()        
+    root.mainloop()  
+    hello how are you       
