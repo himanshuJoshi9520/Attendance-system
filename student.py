@@ -3,6 +3,7 @@ from tkinter import ttk
 from PIL import Image, ImageTk
 from tkinter import messagebox
 import mysql.connector
+import cv2
 
 
 class Student:
@@ -61,7 +62,7 @@ class Student:
 
         #left label frame
         Left_frame=LabelFrame(main_frame,bd=2,relief=RIDGE,text="Student Details",font=("times new roman",12,"bold"))
-        Left_frame.place(x=10,y=10,width=730,height=580)
+        Left_frame.place(x=10,y=9,width=730,height=580)
 
         
         img_left = Image.open(r"E:\ing\images (4).jpeg")
@@ -124,7 +125,7 @@ class Student:
 
         # Class Student information
         class_Student_frame = LabelFrame(Left_frame, bd=2, bg="white", relief=RIDGE, text="Class Student Information",font=("times new roman", 13,"bold"))
-        class_Student_frame.place(x=5, y=250, width=720, height=300)
+        class_Student_frame.place(x=5, y=240, width=720, height=300)
 
         # student id
         studentId_label = Label(class_Student_frame, text="StudentID:", font=("times new roman", 13,"bold"),bg="white")
@@ -217,7 +218,7 @@ class Student:
 
          # Buttons Frame
         btn_frame = Frame(class_Student_frame, bd=2, relief=RIDGE, bg="white")
-        btn_frame.place(x=0, y=200, width=715, height=35)
+        btn_frame.place(x=0, y=210, width=715, height=35)
 
         save_btn = Button(btn_frame, text="Save",command=self.add_data, width=17, font=("times new roman", 13, "bold"), bg="blue",fg="white")
         save_btn.grid(row=0, column=0)
@@ -232,9 +233,9 @@ class Student:
         reset_btn.grid(row=0, column=3)
 
         btn_frame1 = Frame(class_Student_frame, bd=2, relief=RIDGE, bg="white")
-        btn_frame1.place(x=0, y=235, width=715, height=35)
+        btn_frame1.place(x=0, y=245, width=715, height=25)
 
-        take_photo_btn = Button(btn_frame1, text="Take Photo Sample", width=35, font=("times new roman", 13, "bold"),bg="blue",fg="white")
+        take_photo_btn = Button(btn_frame1, text="Take Photo Sample", width=35, font=("times new roman", 13, "bold"),bg="blue",fg="white",command=self.generate_dataset)
         take_photo_btn.grid(row=0, column=0)
 
         update_photo_btn = Button(btn_frame1, text="Update Photo Sample", width=35, font=("times new roman", 13, "bold"),bg="blue",fg="white")
@@ -442,6 +443,7 @@ class Student:
               else:
                   return
           except Exception as es:
+            
               messagebox.showerror("Error", f"Due To: {str(es)}", parent=self.root)
     # delete fuction
 
@@ -483,6 +485,73 @@ class Student:
       self.var_address.set("")
       self.var_teacher.set("")
       self.var_radio1.set("")
+    #===========generate data set or take photo smaples========
+    def generate_dataset(self):
+      if self.var_dep.get() == "select Department" or self.var_std_name.get() == "" or self.var_std_id.get() == "":
+        messagebox.showerror("Error", "All fields are required", parent=self.root)
+      else:
+        try:
+
+          conn = mysql.connector.connect(host="localhost", username="root", password="12345678", database="face_recognizer")
+          my_cursor = conn.cursor()
+          my_cursor.execute("select * from student ")
+          myresult=my_cursor.fetchall()
+          id=0
+          for x in myresult:
+            id+=1
+          my_cursor.execute("UPDATE student SET Dep=%s, course=%s, Year=%s, Semester=%s, Division=%s, Roll=%s, Gender=%s, Dob=%s, Email=%s, Phone=%s, Address=%s, Teacher=%s, PhotoSample=%s WHERE Student_id=%s", (
+                      self.var_dep.get(),
+                      self.var_course.get(),
+                      self.var_year.get(),
+                      self.var_semester.get(),
+                      self.var_div.get(),
+                      self.var_roll.get(),
+                      self.var_gender.get(),
+                      self.var_dob.get(),
+                      self.var_email.get(),
+                      self.var_phone.get(),
+                      self.var_address.get(),
+                      self.var_teacher.get(),
+                      self.var_radio1.get(),  # Assuming var_radio1 corresponds to PhotoSample
+                      self.var_std_id.get()==id+1
+                  ))
+          conn.commit()
+          self.fetch_data()
+          self.reset_data()  
+          conn.close()  
+          # load predifined data 
+          face_classifier=cv2.CascadeClassifier("haarcascade_frontalface_default.xml") 
+
+          def face_cropped(img):
+            gray=cv2.cvtColor(img,cv2.COLOR_BGR2GRAY) 
+            faces=face_classifier.detectMultiScale(gray,1.3,5)
+            for(x,y,w,h)in faces:
+              face_cropped=img[y:y+h,x:x+w]
+              return face_cropped
+
+          cap=cv2.VideoCapture(0)
+          img_id=0  
+          while True:
+            ret,my_frame=cap.read()
+            if face_cropped(my_frame) is not None:
+              img_id+=1
+              face=cv2.resize(face_cropped(my_frame),(1200,1200)) 
+              face=cv2.cvtColor(face,cv2.COLOR_BGR2GRAY)
+              file_name_path="data/user."+str(id)+"."+str(img_id)+".jpg"
+              cv2.imwrite(file_name_path,img_id) 
+              cv2.putText(face,str(img_id),(50,50),cv2.FONT_HERSHEY_COMPLEX,2,(0,255,0),2)
+              cv2.imshow("Face Cropper",face)
+
+            if cv2.waitKey(1) == 13  or int(img_id)==100:
+              break
+          cap.release()  
+          cv2.destroyAllWindows()
+          messagebox.showinfo("Success","Successfully generated dataset")
+        except Exception as es:
+          messagebox.showerror("Error", f"Due To: {str(es)}", parent=self.root)
+
+
+
 
                         
 
@@ -504,4 +573,4 @@ if __name__ == "__main__":
     root = Tk()
     obj = Student(root)
     root.mainloop()  
-    hello how are you       
+         
