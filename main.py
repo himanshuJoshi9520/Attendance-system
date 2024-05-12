@@ -36,7 +36,7 @@ class Face_Recognition_System:
         bg_img.place(x=0, y=130, width=1530, height=710)
 
         title_lbl = Label(bg_img, text="FACE RECOGNITION ATTENDANCE SYSTEM", font=("times new roman", 35, "bold"), bg="black", fg="white")
-        title_lbl.place(x=0, y=0, width=1530, height=100)
+        title_lbl.place(x=0, y=0, width=1530, height=200)
         
         #bg button
         img4 = Image.open(r"E:\ing\iStock-classroom-girls-students-school.jpg")
@@ -103,7 +103,7 @@ class Face_Recognition_System:
         b1.place(x=200,y=380,width=250,height=220)
 
         
-        b1_1=Button(bg_img,text="Train Data",cursor="hand2",font=("times new roman", 25, "bold"), bg="darkblue", fg="white")
+        b1_1=Button(bg_img,text="Train Data",cursor="hand2",command=self.train_data,font=("times new roman", 25, "bold"), bg="darkblue", fg="white")
         b1_1.place(x=200,y=580,width=250,height=40)
 
         # photos
@@ -113,11 +113,11 @@ class Face_Recognition_System:
         self.photoimg9= ImageTk.PhotoImage(img9)
 
 
-        b1=Button(bg_img,image=self.photoimg9,cursor="hand2")
+        b1=Button(bg_img,image=self.photoimg9,cursor="hand2",command=self.open_img)
         b1.place(x=500,y=380,width=250,height=220)
 
         
-        b1_1=Button(bg_img,text="Photos",cursor="hand2",font=("times new roman", 25, "bold"), bg="darkblue", fg="white")
+        b1_1=Button(bg_img,text="Photos",cursor="hand2",command=self.open_img,font=("times new roman", 25, "bold"), bg="darkblue", fg="white")
         b1_1.place(x=500,y=580,width=250,height=40)
 
         # developer
@@ -146,6 +146,8 @@ class Face_Recognition_System:
         b1_1=Button(bg_img,text="Face Detector",cursor="hand2",font=("times new roman", 25, "bold"), bg="darkblue", fg="white")
         b1_1.place(x=1100,y=580,width=250,height=40)
 
+    def open_img(self):
+        os.startfile("data")
 
 
 #-----------------function button -----------
