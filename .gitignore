@@ -1,5 +1,1 @@
-# C:\Users\hj952\Desktop\face recognition system\data
-# Navigate to the directory containing the .gitignore file
-
-# Append the folder name to .gitignore
-Add-Content .gitignore "data/"
+data/
