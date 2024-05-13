@@ -420,7 +420,7 @@ class Student:
               if update:
                   conn = mysql.connector.connect(host="localhost", username="root", password="12345678", database="face_recognizer")
                   my_cursor = conn.cursor()
-                  my_cursor.execute("UPDATE student SET Dep=%s, course=%s, Year=%s, Semester=%s, Division=%s, Roll=%s, Gender=%s, Dob=%s, Email=%s, Phone=%s, Address=%s, Teacher=%s, PhotoSample=%s WHERE Student_id=%s", (
+                  my_cursor.execute("UPDATE student SET Dep=%s, course=%s, Year=%s, Semester=%s, Name=%s,Division=%s, Roll=%s, Gender=%s, Dob=%s, Email=%s, Phone=%s, Address=%s, Teacher=%s, PhotoSample=%s WHERE Student_id=%s", (
                       self.var_dep.get(),
                       self.var_course.get(),
                       self.var_year.get(),
@@ -499,7 +499,7 @@ class Student:
           id=0
           for x in myresult:
             id+=1
-          my_cursor.execute("UPDATE student SET Dep=%s, course=%s, Year=%s, Semester=%s, Division=%s, Roll=%s, Gender=%s, Dob=%s, Email=%s, Phone=%s, Address=%s, Teacher=%s, PhotoSample=%s WHERE Student_id=%s", (
+          my_cursor.execute("UPDATE student SET Dep=%s, course=%s, Year=%s, Semester=%s,Name=%s, Division=%s, Roll=%s, Gender=%s, Dob=%s, Email=%s, Phone=%s, Address=%s,  PhotoSample=%s WHERE Student_id=%s", (
                       self.var_dep.get(),
                       self.var_course.get(),
                       self.var_year.get(),

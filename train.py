@@ -51,9 +51,10 @@ class Train:
             cv2.imshow("Training",imageNp)
             cv2.waitKey(1)==13
         ids=np.array(ids)
-        #=====Train classifier====
-        
+         #=====Train classifier====
         clf = cv2.face.LBPHFaceRecognizer_create()
+        # For OpenCV 4.9.0 and above, use the following:
+        # clf = cv2.face_LBPHFaceRecognizer.create()
         clf.train(faces,ids)
         clf.save("classifier.xml")
         cv2.destroyAllWindows()
