@@ -35,7 +35,7 @@ class Student:
         f_lbl = Label(self.root, image=self.photoimg)
         f_lbl.place(x=0, y=0, width=500, height=130)
 
-        img1 = Image.open(r"E:\ing\iStock-classroom-girls-students-school.jpg")
+        img1 = Image.open(r"E:\ing\download.jpg")
         img1 = img1.resize((500, 130))
         self.photoimg1 = ImageTk.PhotoImage(img1)
         f_lbl = Label(self.root, image=self.photoimg1)
@@ -65,7 +65,7 @@ class Student:
         Left_frame.place(x=10,y=9,width=730,height=580)
 
         
-        img_left = Image.open(r"E:\ing\images (4).jpeg")
+        img_left = Image.open(r"E:\ing\download (1).jpg")
         img_left = img_left.resize((720, 130))
         self.photoimg_left = ImageTk.PhotoImage(img_left)
         f_lbl = Label(Left_frame, image=self.photoimg_left)
@@ -97,11 +97,11 @@ class Student:
         dep_combo.grid(row=0, column=1, padx=2, pady=10, sticky=W)
 
 # Course
-        course_label = Label(current_course_frame, text="Course", font=("times new roman", 13,"bold"),bg="white")
+        course_label = Label(current_course_frame, text="Course year", font=("times new roman", 13,"bold"),bg="white")
         course_label.grid(row=0, column=2, padx=10, sticky=W)
 
         course_combo = ttk.Combobox(current_course_frame,textvariable=self.var_course, font=("times new roman", 13,"bold"),state="readonly",width=20)
-        course_combo["values"] = ("Select Course", "FE", "SE", "TE", "BE")
+        course_combo["values"] = ("Select Course year", "1st", "2nd", "3rd", "4th")
         course_combo.current(0)
         course_combo.grid(row=0, column=3, padx=2, pady=10, sticky=W)
 
@@ -110,7 +110,7 @@ class Student:
         year_label.grid(row=1, column=0, padx=10, sticky=W)
 
         year_combo = ttk.Combobox(current_course_frame, textvariable=self.var_year,font=("times new roman", 13, "bold"), state="readonly",width=20)
-        year_combo["values"] = ("Select Year", "2020-21", "2021-22", "2022-23", "2023-24")
+        year_combo["values"] = ("Select Year", "2023-24", "2024-25", "2025-26", "2026-27")
         year_combo.current(0)
         year_combo.grid(row=1, column=1, padx=2, pady=10, sticky=W)
 
@@ -119,7 +119,7 @@ class Student:
         semester_label.grid(row=1, column=2, padx=10, sticky=W)
 
         semester_combo = ttk.Combobox(current_course_frame,textvariable=self.var_semester, font=("times new roman", 13, "bold"), state="readonly",width=20)
-        semester_combo["values"] = ("Select Semester", "Semester-1", "Semester-2")
+        semester_combo["values"] = ("Select Semester", "Semester-1", "Semester-2","Semester-3","Semester-4","Semester-5","Semester-6","Semester-7","Semester-8")
         semester_combo.current(0)
         semester_combo.grid(row=1, column=3, padx=2, pady=10, sticky=W)
 
@@ -250,7 +250,7 @@ class Student:
         Right_frame=LabelFrame(main_frame,bd=2,relief=RIDGE,text="Student Details",font=("times new roman",12,"bold"))
         Right_frame.place(x=750,y=10,width=720,height=580)
 
-        img_right = Image.open(r"E:\ing\download (4).jpeg")
+        img_right = Image.open(r"E:\ing\download (2).jpg")
         img_right = img_right.resize((720, 130))
         self.photoimg_right = ImageTk.PhotoImage(img_right)
         f_lbl = Label(Right_frame, image=self.photoimg_right)
@@ -378,7 +378,7 @@ class Student:
       my_cursor=conn.cursor()
       my_cursor.execute("select * from student ")
       data=my_cursor.fetchall()
-
+      
       if len(data)!=0:
         self.student_table.delete(*self.student_table.get_children())
         for i in data:
@@ -543,7 +543,7 @@ class Student:
               cv2.putText(face,str(img_id),(50,50),cv2.FONT_HERSHEY_COMPLEX,2,(0,255,0),2)
               cv2.imshow("Face Cropper",face)
 
-            if cv2.waitKey(1) == 13  or int(img_id)==50:
+            if cv2.waitKey(1) == 13  or int(img_id)==100:
               break
           cap.release()  
           cv2.destroyAllWindows()

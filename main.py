@@ -4,7 +4,14 @@ from PIL import Image, ImageTk
 import os
 from student import Student
 from train import Train
+from time import strftime
+from datetime import datetime
 from face_recognition import Face_Recognition
+from attendance import Attendance
+from developer import Developer
+from help import Help
+import tkinter
+from tkinter import messagebox
 
 
 class Face_Recognition_System:
@@ -19,7 +26,7 @@ class Face_Recognition_System:
         f_lbl = Label(self.root, image=self.photoimg)
         f_lbl.place(x=0, y=0, width=500, height=130)
 
-        img1 = Image.open(r"E:\ing\download.jpeg")
+        img1 = Image.open(r"C:\Users\hj952\Desktop\MicrosoftTeams-image-246-1024x599.jpg")
         img1 = img1.resize((500, 130))
         self.photoimg1 = ImageTk.PhotoImage(img1)
         f_lbl = Label(self.root, image=self.photoimg1)
@@ -38,7 +45,15 @@ class Face_Recognition_System:
         bg_img.place(x=0, y=130, width=1530, height=710)
 
         title_lbl = Label(bg_img, text="FACE RECOGNITION ATTENDANCE SYSTEM", font=("times new roman", 35, "bold"), bg="black", fg="white")
-        title_lbl.place(x=0, y=0, width=1530, height=200)
+        title_lbl.place(x=0, y=0, width=1530, height=80)
+
+        def time():
+            string=strftime("%H:%M:%S %p")
+            lbl.config(text=string)
+            lbl.after(1000, time)
+        lbl=Label(title_lbl, font=("times new roman", 14, "bold"),background='white',foreground='black')
+        lbl.place(x=0,y=0,width=110,height=50) 
+        time()   
         
         #bg button
         img4 = Image.open(r"E:\ing\iStock-classroom-girls-students-school.jpg")
@@ -73,11 +88,11 @@ class Face_Recognition_System:
         self.photoimg6= ImageTk.PhotoImage(img6)
 
 
-        b1=Button(bg_img,image=self.photoimg6,cursor="hand2")
+        b1=Button(bg_img,image=self.photoimg6,cursor="hand2",command=self.attendance_data)
         b1.place(x=800,y=100,width=250,height=220)
 
         
-        b1_1=Button(bg_img,text="Attendance",cursor="hand2",font=("times new roman", 25, "bold"), bg="darkblue", fg="white")
+        b1_1=Button(bg_img,text="Attendance",cursor="hand2",command=self.attendance_data,font=("times new roman", 25, "bold"), bg="darkblue", fg="white")
         b1_1.place(x=800,y=300,width=250,height=40)
 
         # help face button
@@ -87,11 +102,11 @@ class Face_Recognition_System:
         self.photoimg7= ImageTk.PhotoImage(img7)
 
 
-        b1=Button(bg_img,image=self.photoimg7,cursor="hand2")
+        b1=Button(bg_img,image=self.photoimg7,cursor="hand2",command=self.help_data)
         b1.place(x=1100,y=100,width=250,height=220)
 
         
-        b1_1=Button(bg_img,text="Help Desk",cursor="hand2",font=("times new roman", 25, "bold"), bg="darkblue", fg="white")
+        b1_1=Button(bg_img,text="Help Desk",cursor="hand2",command=self.help_data,font=("times new roman", 25, "bold"), bg="darkblue", fg="white")
         b1_1.place(x=1100,y=300,width=250,height=40)
 
         # train face
@@ -128,11 +143,11 @@ class Face_Recognition_System:
         self.photoimg10= ImageTk.PhotoImage(img10)
 
 
-        b1=Button(bg_img,image=self.photoimg10,cursor="hand2")
+        b1=Button(bg_img,image=self.photoimg10,cursor="hand2",command=self.developer_data)
         b1.place(x=800,y=380,width=250,height=220)
 
         
-        b1_1=Button(bg_img,text="Developer",cursor="hand2",font=("times new roman", 25, "bold"), bg="darkblue", fg="white")
+        b1_1=Button(bg_img,text="Developer",cursor="hand2",command=self.developer_data,font=("times new roman", 25, "bold"), bg="darkblue", fg="white")
         b1_1.place(x=800,y=580,width=250,height=40)
 
         #exit button
@@ -141,15 +156,22 @@ class Face_Recognition_System:
         self.photoimg11= ImageTk.PhotoImage(img11)
 
 
-        b1=Button(bg_img,image=self.photoimg11,cursor="hand2")
+        b1=Button(bg_img,image=self.photoimg11,cursor="hand2",command=self.iExit)
         b1.place(x=1100,y=380,width=250,height=220)
 
         
-        b1_1=Button(bg_img,text="Face Detector",cursor="hand2",font=("times new roman", 25, "bold"), bg="darkblue", fg="white")
+        b1_1=Button(bg_img,text="Face Detector",cursor="hand2",command=self.iExit,font=("times new roman", 25, "bold"), bg="darkblue", fg="white")
         b1_1.place(x=1100,y=580,width=250,height=40)
 
     def open_img(self):
         os.startfile("data")
+
+    def iExit(self):
+        self.iExit=messagebox.askyesno("Face Recognition System","Do you want to exit",parent=self.root)
+        if self.iExit>0:
+            self.root.destroy()
+        else:
+            messagebox.showinfo("Face Recognition System","Ok")    
 
 
 #-----------------function button -----------
@@ -165,6 +187,18 @@ class Face_Recognition_System:
     def  face_data(self):
        self.new_window=Toplevel(self.root)
        self.app=Face_Recognition(self.new_window)
+
+    def attendance_data(self):
+        self.new_window=Toplevel(self.root)
+        self.app=Attendance(self.new_window)  
+
+    def developer_data(self):
+        self.new_window=Toplevel(self.root)
+        self.app=Developer(self.new_window)  
+
+    def help_data(self):
+        self.new_window=Toplevel(self.root)
+        self.app=Help(self.new_window)    
 
 
 

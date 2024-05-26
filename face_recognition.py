@@ -1,10 +1,16 @@
-import cv2
-import mysql.connector
-from tkinter import *
+from sys import path
+from tkinter import*
 from tkinter import ttk
+from PIL import Image,ImageTk
+import os
+import mysql.connector
+import cv2
+import numpy as np
+from tkinter import messagebox
 from time import strftime
 from datetime import datetime
-from PIL import Image, ImageTk
+
+
 
 
 class Face_Recognition:
@@ -18,7 +24,7 @@ class Face_Recognition:
 
 
         #-1st-image--
-        img_top = Image.open(r"E:\ing\images (6).jpeg")
+        img_top = Image.open(r"E:\ing\images (1).jpg")
         img_top = img_top.resize((650, 700))
         self.photoimg_top = ImageTk.PhotoImage(img_top)
 
@@ -26,7 +32,7 @@ class Face_Recognition:
         f_lbl.place(x=0, y=70, width=650, height=700)
 
         # 2nd-image
-        img_bottom = Image.open(r"E:\ing\download (5).jpeg")
+        img_bottom = Image.open(r"C:\Users\hj952\Desktop\MicrosoftTeams-image-246-1024x599.jpg")
         img_bottom = img_bottom.resize((950, 700))
         self.photoimg_bottom = ImageTk.PhotoImage(img_bottom)
 
@@ -39,7 +45,7 @@ class Face_Recognition:
         b1_1.config(command=self.face_recog)
        #===============attendance============
     def mark_attendance(self,i,r,n,d):
-        with open("kiran.csv", "r+",newline="\n") as f:
+        with open("h.csv", "r+",newline="\n") as f:
             myDataList=f.readlines()
             name_list=[]
             for line in myDataList:
@@ -65,38 +71,48 @@ class Face_Recognition:
                 id, predict = clf.predict(gray_image[y:y + h, x:x + w])
                 confidence = int((100 * (1 - predict / 300)))
 
-                conn = mysql.connector.connect(host="localhost", username="root", password="12345678", database="face_recognizer")
+                conn = mysql.connector.connect(host="localhost", username="root", password="12345678", database="face_recognizer",port=3306)
                 my_cursor = conn.cursor()
 
-                my_cursor.execute("select Name from student where Student_id=" + str(id))
+                # my_cursor.execute("select Name from student where Student_id=" + str(id))
+                # my_cursor.execute("slect Name from (SELECT Name, ROW_NUMBER() OVER() AS row_num FROM student) AS temp WHERE row_num = %s", (id))
+                my_cursor.execute("SELECT Name FROM student LIMIT %s, 1", (id-1 ,))
+
                 n = my_cursor.fetchone()
-                if n is not None:
+                if n:
                     n = n[0]
 
-                my_cursor.execute("select Roll from student where Student_id=" + str(id))
+                # my_cursor.execute("select Roll from student where Student_id=" + str(id))
+                my_cursor.execute("SELECT Roll FROM student LIMIT %s, 1", (id-1 ,))
                 r = my_cursor.fetchone()
-                if r is not None:
+                if r:
                     r = r[0]
 
-                my_cursor.execute("select Dep from student where Student_id=" + str(id))
+                # my_cursor.execute("select Dep from student where Student_id=" + str(id))
+                my_cursor.execute("SELECT Dep FROM student LIMIT %s, 1", (id-1 ,))
                 d = my_cursor.fetchone()
-                if d is not None:
+                if d:
                     d = d[0]
 
-                my_cursor.execute("select Student_id from student where Student_id=" + str(id))
+                # my_cursor.execute("select Student_id from student where Student_id=" + str(id))
+                my_cursor.execute("SELECT Student_id FROM student LIMIT %s, 1", (id-1 ,))
                 i = my_cursor.fetchone()
-                if i is not None:
-                    i = i[0]    
+                if i:
+                    i = i[0]
+
+                                
 
                 if confidence > 78:
-                    cv2.putText(img, f"ID:{i}", (x, y - 55), cv2.FONT_HERSHEY_COMPLEX, 0.8, (255, 255, 255), 3)
-                    cv2.putText(img, f"Roll:{r}", (x, y - 55), cv2.FONT_HERSHEY_COMPLEX, 0.8, (255, 255, 255), 3)
+                    cv2.putText(img, f"ID:{i}", (x, y - 75), cv2.FONT_HERSHEY_COMPLEX, 0.8, (255, 255, 255),2)
+                    cv2.putText(img, f"Roll:{r}", (x, y - 50), cv2.FONT_HERSHEY_COMPLEX, 0.8, (255, 255, 255),2)
                     #if n is not None:
-                    cv2.putText(img, f"Name:{n}", (x, y - 30), cv2.FONT_HERSHEY_COMPLEX, 0.8, (255, 255, 255), 3)
+                    cv2.putText(img, f"Name:{n}", (x, y - 30), cv2.FONT_HERSHEY_COMPLEX, 0.8, (255, 255, 255), 2)
                     #if d is not None:
-                    cv2.putText(img, f"Department:{d}", (x, y - 5), cv2.FONT_HERSHEY_COMPLEX, 0.8, (255, 255, 255), 3)
+                    cv2.putText(img, f"Department:{d}", (x, y - 5), cv2.FONT_HERSHEY_COMPLEX, 0.8, (255, 255, 255), 2)
                     self.mark_attendance(i,r,n,d)
+                    
                 else:
+                    
                     cv2.rectangle(img, (x, y), (x + w, y + h), (0, 0, 255), 3)
                     cv2.putText(img, "unknown face", (x, y - 5), cv2.FONT_HERSHEY_COMPLEX, 0.8, (255, 255, 255), 3)
 
@@ -130,3 +146,6 @@ if __name__ == "__main__":
     root = Tk()
     obj = Face_Recognition(root)
     root.mainloop()
+
+
+
